@@ -30,23 +30,28 @@ function outputEnlargedImage(event) {
   const selectedImg = event.target.dataset.source;
   console.log(selectedImg);
 
-  const modalWindow = basicLightbox.create(
-    `
-		<img width="1400" height="900" src="${selectedImg}">
-	`
-  );
-  modalWindow.show();
-
   const handleClickModalWindow = (event) => {
     event.preventDefault();
     if (event.code === "Escape") {
       modalWindow.close();
       console.log("Escape pressed");
-      document.removeEventListener("keydown", handleClickModalWindow);
     }
   };
 
-  document.addEventListener("keydown", handleClickModalWindow);
+  const modalWindow = basicLightbox.create(
+    `
+		<img width="1400" height="900" src="${selectedImg}">
+	`,
+    {
+      onShow: () => {
+        document.addEventListener("keydown", handleClickModalWindow);
+      },
+      onClose: () => {
+        document.removeEventListener("keydown", handleClickModalWindow);
+      },
+    }
+  );
+  modalWindow.show();
 }
 
 console.log(galleryItems);
